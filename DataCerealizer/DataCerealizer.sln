@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataCerealizer", "DataCerealizer.csproj", "{9BB702D4-DE4B-4C6F-8A6E-88DF56E2C82C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9BB702D4-DE4B-4C6F-8A6E-88DF56E2C82C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BB702D4-DE4B-4C6F-8A6E-88DF56E2C82C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BB702D4-DE4B-4C6F-8A6E-88DF56E2C82C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BB702D4-DE4B-4C6F-8A6E-88DF56E2C82C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7E0F8826-EA55-4D23-9453-BE7B5BBCC695}
+	EndGlobalSection
+EndGlobal
