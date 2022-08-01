@@ -6,19 +6,21 @@ internal class Program
 {
     public static void Main(string[] args)
     {
+        string path = @"C:\Users\naqui\Desktop", filename = "test", fullpath = $@"{path}/{filename}.cereal";
+
         var cereal = new Cereal
         {
             AmtCereal = 10,
             Brand = "Corn Flakes"
         };
 
-        var guh = DataCerealizer<Cereal>.Serialize(cereal);
+        if (File.Exists(fullpath))
+            File.Delete(fullpath);
+        
+        var digestedCereal = DataCerealizer<Cereal>.Serialize(cereal, "This file contains info on cereal.");
+        var huh = Encoding.ASCII.GetString(digestedCereal);
+        c.Write(huh);
 
-        foreach (var e in guh)
-            c.Write($"{e:X}");
-        c.WriteLine();
-        string ee = Encoding.ASCII.GetString(guh);
-        c.Write(ee);
-        ;
+        File.WriteAllBytes(fullpath, digestedCereal);
     }
 }
