@@ -1,6 +1,7 @@
 ﻿using c = System.Console;
 using System.Text;
 using DataCerealizer;
+using System.Reflection;
 
 internal class Program
 {
@@ -22,5 +23,21 @@ internal class Program
         c.Write(huh);
 
         File.WriteAllBytes(fullpath, digestedCereal);
+
+        c.WriteLine("\nSaved! Deserializing...");
+
+        Cereal deCerealized = DataCerealizer<Cereal>.Deserialize(File.ReadAllBytes(fullpath));
+
+        c.WriteLine($"Deserealized cereal: ({deCerealized.GetType()}): {PrintProps(deCerealized)[..^1]} }}");
+    }
+
+    private static string PrintProps<T>(T obj) 
+    {
+        string res = "";
+
+        foreach (var prop in typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic))
+            res += $"{prop.Name} ({prop.PropertyType}): {prop.GetValue(obj, null)}, ";
+
+        return res;
     }
 }

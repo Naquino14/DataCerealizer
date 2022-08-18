@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace DataCerealizer
 {
@@ -12,14 +13,32 @@ namespace DataCerealizer
             ETX = 0x3,
             EM = 0x19;
 
-        public static T Deserialize(byte[] data)
+        public static T Deserialize(byte[] data) => Deserialize(data, out _);
+        public static T Deserialize(byte[] data, out string? metadata)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+
+            object? result = Activator.CreateInstance(typeof(T));
 
             /// Structure:
             /// 0x01(SOH) Header [0x1f(US) Metadata if it exists] 0x02(STX) 
             /// Prop1 0x1f(US) Prop2 0x1f(US) PropN 0x19(EM)
             /// Value1 0x1f(US) Value2 0x1f(US) ValueN 0x03(ETX)
+            var sdata = GS(data);
+
+            metadata = new Regex($"(?<={(char)US})(.*)(?={(char)STX})").Match(sdata).Value;
+
+            var props = Regex.Match(sdata, $"(?<={(char)STX})(.*?)(?={(char)EM})").Captures[0].Value.Split((char)US);
+            var values = Regex.Match(sdata, $"(?<={(char)EM})(.*?)(?={(char)ETX})").Captures[0].Value.Split((char)US);
+
+            for (int i = 0; i < props.Length; i++)
+            {
+                var prop = GetProp(props[i]) ?? throw new Exception();
+                if (prop is not null && prop.CanWrite)
+                    prop.SetValue(result, Convert.ChangeType(values[i], prop.PropertyType));
+            }
+
+            return (T)result! ?? throw new Exception(); // todo: deserializing errors
         }
 
         public static object DeserializeRaw(byte[] data)
@@ -71,7 +90,8 @@ namespace DataCerealizer
             return head.SkipLast(1).Concat(B2BA(EM)).ToArray();
         }
         
-        private static PropertyInfo[] GetProps() => typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        private static PropertyInfo[] GetProps() => typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic);
+        private static PropertyInfo? GetProp(string key) => typeof(T).GetProperty(key, BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic);
         private static string GS(byte[] i) => Encoding.ASCII.GetString(i);
         private static byte[] GB(string i) => Encoding.ASCII.GetBytes(i);
         private static byte[] B2BA(byte a) => new byte[] { a };
